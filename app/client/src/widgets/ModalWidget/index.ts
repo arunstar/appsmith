@@ -25,6 +25,7 @@ import WidgetFactory from "utils/WidgetFactory";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
+  eagerRender: true,
   name: "Modal",
   iconSVG: IconSVG,
   needsMeta: true,

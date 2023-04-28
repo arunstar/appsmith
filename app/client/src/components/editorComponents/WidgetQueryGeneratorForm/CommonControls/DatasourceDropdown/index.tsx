@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Bold, SelectWrapper } from "../../styles";
 import { useDatasource } from "./useDatasource";
 import { Select, Option, Icon } from "design-system";
-import { DropdownOption } from "../../components/DropdownOption";
+import { DropdownOption } from "./DropdownOption";
 import styled from "styled-components";
 import { Colors } from "constants/Colors";
 import type { DropdownOptionType } from "../../types";
@@ -54,6 +54,7 @@ function DatasourceDropdown() {
           setOpen(false);
         }}
         open={open}
+        placeholder="Connect data"
         value={selected}
         virtual={false}
       >

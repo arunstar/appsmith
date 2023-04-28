@@ -184,8 +184,9 @@ function* BindWidgetToDatasource(
         text: `Successfully created action${
           createdActions.length > 1 ? "s" : ""
         }: ${createdActions.map((d) => d.name)}`,
-        hideProgressBar: false,
+        hideProgressBar: true,
         variant: Variant.success,
+        duration: 3000,
       });
 
       const actionsToRun = createdActions.filter(
@@ -215,18 +216,24 @@ function* BindWidgetToDatasource(
       if (createdQueryNames.includes(queryNameMap[QUERY_TYPE.UPDATE])) {
         queryBindingConfig[QUERY_TYPE.UPDATE] = {
           data: `{{${queryNameMap[QUERY_TYPE.UPDATE]}.data}}`,
-          run: `{{${queryNameMap[QUERY_TYPE.UPDATE]}.run(() => ${
-            queryNameMap[QUERY_TYPE.SELECT]
-          }.run())}}`,
+          run: `{{${queryNameMap[QUERY_TYPE.UPDATE]}.run(() => {
+            showAlert("Successfully saved!");
+            ${queryNameMap[QUERY_TYPE.SELECT]}.run();
+          }, () => {
+            showAlert("Unable to save!");
+          })}}`,
         };
       }
 
       if (createdQueryNames.includes(queryNameMap[QUERY_TYPE.CREATE])) {
         queryBindingConfig[QUERY_TYPE.CREATE] = {
           data: `{{${queryNameMap[QUERY_TYPE.CREATE]}.data}}`,
-          run: `{{${queryNameMap[QUERY_TYPE.CREATE]}.run(() => ${
-            queryNameMap[QUERY_TYPE.SELECT]
-          }.run())}}`,
+          run: `{{${queryNameMap[QUERY_TYPE.CREATE]}.run(() => {
+            showAlert("Successfully created!");
+            ${queryNameMap[QUERY_TYPE.SELECT]}.run()
+          }, () => {
+            showAlert("Unable to create!");
+          })}}`,
         };
       }
 

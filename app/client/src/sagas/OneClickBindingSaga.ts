@@ -199,6 +199,8 @@ function* BindWidgetToDatasource(
         yield put(runAction(action.id, undefined, true));
       }
 
+      yield take(ReduxActionTypes.EXECUTE_PLUGIN_ACTION_SUCCESS);
+
       const { getPropertyUpdatesForQueryBinding } =
         WidgetFactory.getWidgetMethods(widget.type);
 

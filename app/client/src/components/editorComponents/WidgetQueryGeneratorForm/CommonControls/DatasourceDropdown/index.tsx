@@ -6,6 +6,7 @@ import { DropdownOption } from "./DropdownOption";
 import styled from "styled-components";
 import { Colors } from "constants/Colors";
 import type { DropdownOptionType } from "../../types";
+import type { DefaultOptionType } from "rc-select/lib/Select";
 
 const SectionHeader = styled.div`
   cursor: default;
@@ -38,16 +39,30 @@ function DatasourceDropdown() {
           minWidth: "350px",
           maxHeight: "300px",
         }}
+        filterOption={(value: string, option?: DefaultOptionType) => {
+          if (
+            ["Bind to query", "Generate a query", "Other actions"].includes(
+              option?.value as string,
+            )
+          ) {
+            return false;
+          } else {
+            return (
+              !!option?.value &&
+              option.value.toString()?.toLocaleLowerCase().indexOf(value) > -1
+            );
+          }
+        }}
         onDropdownVisibleChange={(open: boolean) => {
           !open && onSourceClose();
           setOpen(open);
         }}
-        onSelect={(value: string) => {
+        onSelect={(value: string, selectedOption: any) => {
           const option = [
             ...datasourceOptions,
             ...otherOptions,
             ...queryOptions,
-          ].find((option) => option.id === value);
+          ].find((option) => option.id === selectedOption.key);
 
           option?.onSelect?.(value, option as DropdownOptionType);
           onSourceClose();
@@ -55,6 +70,7 @@ function DatasourceDropdown() {
         }}
         open={open}
         placeholder="Connect data"
+        showSearch
         value={selected}
         virtual={false}
       >
@@ -66,7 +82,7 @@ function DatasourceDropdown() {
 
         {queryOptions.map((option: any) => {
           return (
-            <Option key={option.id} value={option.id}>
+            <Option key={option.id} value={option.label}>
               <DropdownOption label={option.label} leftIcon={option.icon} />
             </Option>
           );
@@ -82,11 +98,12 @@ function DatasourceDropdown() {
 
         {datasourceOptions.map((option: any) => {
           return (
-            <Option key={option.id} value={option.id}>
+            <Option key={option.id} value={option.label}>
               <DropdownOption
                 label={
                   <>
-                    New from <Bold>{option.label}</Bold>
+                    New from {option.data.isSample ? "sample " : ""}
+                    <Bold>{option.label}</Bold>
                   </>
                 }
                 leftIcon={option.icon}
@@ -102,7 +119,7 @@ function DatasourceDropdown() {
 
         {otherOptions.map((option: any) => {
           return (
-            <Option key={option.id} value={option.id}>
+            <Option key={option.id} value={option.label}>
               <DropdownOption label={option.label} leftIcon={option.icon} />
             </Option>
           );
